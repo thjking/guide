@@ -1,5 +1,5 @@
 # -*- coding:UTF-8 -*-
-import math
+from math import sqrt
 users = {
 "Angelica":{"Blue Traveler":3.5,"Broken Bells":2.0,
 "Norah Jones":4.5,"Phoenix":5.0,"Slightly Stoopid":1.5,
@@ -34,6 +34,19 @@ users = {
 
 }
 
+users3 = {"David":{"Imagine Dragons":3,"Daft Punk":5,
+					"Lorde":4,"Fall Out Boy":1},
+		  "Matt":{"Imagine Dragons":3,"Daft Punk":4,
+		            "Lorde":4,"Fall Out Boy":1},
+		  "Ben":{"Kacey Musgraves":4,"Imagine Dragons":3,
+		          "Lorde":3,"Fall Out Boy":1},
+		  "Chris":{"Kacey Musgraves":4,"Imagine Dragons":4,
+		            "Daft Punk":4,"Lorde":3,"Fall Out Boy":1},
+	      "Tori":{"Kacey Musgraves":5,"Imagine Dragons":4,
+		            "Daft Punk":5,"Fall Out Boy":3}
+}
+# users3的物品列表
+content = ["Imagine Dragons","Daft Punk","Fall Out Boy","Lorde","Kacey Musgraves"]
 # print users["Veronica"]
 
 # 曼哈顿距离计算函数
@@ -64,7 +77,7 @@ def Minkowski(rating1, rating2):
 	for key in rating1:
 		if key in rating2:
 			distance += pow((rating1[key]-rating2[key]),2)
-	distance = math.sqrt(distance)
+	distance = sqrt(distance)
 	return distance
 	
 # print Minkowski(users["Bill"],users["Hailey"])
@@ -101,8 +114,8 @@ def pearson(rating1,rating2):
 			c1 += pow(rating1[key],2)
 			d1 += pow(rating2[key],2)
 	b =(b1 * b2) / n
-	c = math.sqrt(c1 - pow(b1,2) / n)
-	d = math.sqrt(d1 - pow(b2,2) / n)
+	c = sqrt(c1 - pow(b1,2) / n)
+	d = sqrt(d1 - pow(b2,2) / n)
 	if c * d == 0:
 		return 0
 	else:
@@ -121,3 +134,38 @@ def computeNearestNeighbor_Pea(username,users):
 	distances.sort()
 	return distances
 # print computeNearestNeighbor_Pea('Hailey',users)
+
+#利用改进版余弦相似度求物品间相似程度
+def computeSimilarity(band1,band2,userRatings):
+	average = {}
+	similarity = {}
+	for (key,rat) in userRatings.items():
+		average[key] = (float(sum(rat.values()))
+		                /len(rat.values()))
+	num = 0
+	num1 = 0
+	num2 = 0
+	for (user,rat) in userRatings.items():
+		if band1 in rat and band2 in rat:
+			num += ((rat[band1] - average[user])*(rat[band2] - average[user]))
+			num1 += pow((rat[band1] - average[user]),2)
+			num2 += pow((rat[band2] - average[user]),2)
+	if sqrt(num1) * sqrt(num2) == 0:
+		return 0
+	else:
+		similarity[band1+','+band2] = float(num / (sqrt(num1) * sqrt(num2)))
+		return similarity
+		#print band1,',',band2,'----',float(num / (sqrt(num1) * sqrt(num2)))
+
+computeSimilarity(content[0],content[1],users3)
+
+def computeSimilarity_all(content):
+	similarity = {}
+	n = len(content)
+	for i in range(0,n):
+		for j in range(0,n):
+			if i != j:
+				#computeSimilarity(content[i],content[j],users3)
+				similarity.update(computeSimilarity(content[i],content[j],users3))
+	return similarity
+print computeSimilarity_all(content)
