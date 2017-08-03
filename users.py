@@ -135,7 +135,7 @@ def computeNearestNeighbor_Pea(username,users):
 	return distances
 # print computeNearestNeighbor_Pea('Hailey',users)
 
-#利用改进版余弦相似度求物品间相似程度
+# 利用改进版余弦相似度求物品间相似程度
 def computeSimilarity(band1,band2,userRatings):
 	average = {}
 	similarity = {}
@@ -153,19 +153,52 @@ def computeSimilarity(band1,band2,userRatings):
 	if sqrt(num1) * sqrt(num2) == 0:
 		return 0
 	else:
-		similarity[band1+','+band2] = float(num / (sqrt(num1) * sqrt(num2)))
-		return similarity
-		#print band1,',',band2,'----',float(num / (sqrt(num1) * sqrt(num2)))
+		#similarity[band1+','+band2] = float(num) / (sqrt(num1) * sqrt(num2))
+		return float(num) / (sqrt(num1) * sqrt(num2))
+		#print band1,',',band2,'----',float(num) / (sqrt(num1) * sqrt(num2))
 
-computeSimilarity(content[0],content[1],users3)
+# computeSimilarity(content[2],content[4],users3)
 
+# 计算任意两物品之间相似度函数（字典形式）
 def computeSimilarity_all(content):
 	similarity = {}
 	n = len(content)
 	for i in range(0,n):
 		for j in range(0,n):
 			if i != j:
-				#computeSimilarity(content[i],content[j],users3)
+				#需搭配字典形式computeSimilarity()函数使用
 				similarity.update(computeSimilarity(content[i],content[j],users3))
 	return similarity
-print computeSimilarity_all(content)
+# print computeSimilarity_all(content)
+
+# 归一化之缩小函数（字典形式）
+def narrow(min,max,users):
+	for (key,rat) in users.items():
+		for key in rat:
+			rat[key] = float(2 * (rat[key] - min) - (max - min)) / (max - min)
+	return users
+# print narrow(1,5,users3)
+
+# 归一化之放大函数（字典形式）
+def enlarge(min,max,users):
+	for (key,rat) in users.items():
+		for key in rat:
+			rat[key] = float((rat[key] + 1)) / 2 * (max - min) + min
+	return users
+
+# print enlarge(1,5,narrow(1,5,users3))
+
+# 基于物品相似度的评分预测函数(字典形式)
+def predict(user,content,users,min,max):
+	sum1 = 0
+	sum2 = 0
+	dict = {}
+	users = narrow(min,max,users)
+	user_s = users[user]
+	for key in user_s:
+		sum1 += user_s[key] * computeSimilarity(key,content,users)
+		sum2 += abs(computeSimilarity(key,content,users))
+	dict[user+','+content] = float(sum1) / sum2
+	return dict
+
+# 以上数函数待加入数值形式以适应不同计算
