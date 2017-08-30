@@ -9,4 +9,5 @@ import normalization as nm
 import predict as pd
 import slopeOneDev as so
 
-so.computeDeviations(users2)
+a = so.slopeOneRecommendtions(users2)
+print a 
