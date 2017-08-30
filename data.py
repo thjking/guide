@@ -53,3 +53,21 @@ users3 = {"David":{"Imagine Dragons":3,"Daft Punk":5,
 
 # users3的物品列表
 content = ["Imagine Dragons","Daft Punk","Fall Out Boy","Lorde","Kacey Musgraves"]
+
+def loadMovieLens(filename):
+    data = {}
+    i = 0
+    f = open(filename)
+    for line in f:
+		print ''
+		i += 1
+		fields = line.strip().split(',')
+		userIDs = int(fields[0])
+		movieIDs = int(fields[1])
+		ratings = float(fields[2])
+		#print userIDs
+		data.setdefault(i,{})
+		data[i].setdefault('userID',userIDs)
+		data[i].setdefault('movieID',movieIDs)
+		data[i].setdefault('rating',ratings)
+    return data
