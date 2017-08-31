@@ -31,20 +31,19 @@ def computeDeviations(user):
     return deviations,frequemcies                                 #返回更新后评分偏差字典
 
 
-def slopeOneRecommendtions(user):
-    deviations,frequemcies = computeDeviations(user)
+def slopeOneRecommendtions(users,user):
+    deviations,frequemcies = computeDeviations(users)
     recommend = {}
     freq = {}
     recommendations = {}
-    for key in user:
-        for (item,rat) in user[key].items():
-            for (diffItem,diffRat) in deviations.items():
-                if diffItem not in user[key] and item in deviations[diffItem]:
-                    recommend.setdefault(diffItem,0)
-                    freq.setdefault(diffItem,0)
-                    recommend[diffItem] += (diffRat[item] + rat) * frequemcies[diffItem][item]
-                    freq[diffItem] += frequemcies[diffItem][item]          
-        for (k,v) in recommend.items():
-            recommendations.setdefault(k,v / freq[k] )
+    for (item,rat) in user.items():
+        for (diffItem,diffRat) in deviations.items():
+            if diffItem not in user and item in deviations[diffItem]:
+                recommend.setdefault(diffItem,0)
+                freq.setdefault(diffItem,0)
+                recommend[diffItem] += (diffRat[item] + rat) * frequemcies[diffItem][item]
+                freq[diffItem] += frequemcies[diffItem][item]          
+    for (k,v) in recommend.items():
+        recommendations.setdefault(k,v / freq[k] )
     return recommendations
   

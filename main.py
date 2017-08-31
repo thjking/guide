@@ -8,6 +8,6 @@ import computeSimilarity as cp
 import normalization as nm
 import predict as pd
 import slopeOneDev as so
-
 a = loadMovieLens('ratings.csv')
-print a 
+b = so.slopeOneRecommendtions(a,a['1'])
+print sorted(b.items(),key = lambda item:item[1])

@@ -56,18 +56,14 @@ content = ["Imagine Dragons","Daft Punk","Fall Out Boy","Lorde","Kacey Musgraves
 
 def loadMovieLens(filename):
     data = {}
-    i = 0
     f = open(filename)
-    for line in f:
-		print ''
-		i += 1
+    fr = f.readlines()
+    for line in fr:
 		fields = line.strip().split(',')
-		userIDs = int(fields[0])
-		movieIDs = int(fields[1])
+		userIDs = fields[0]
+		movieIDs = fields[1]
 		ratings = float(fields[2])
 		#print userIDs
-		data.setdefault(i,{})
-		data[i].setdefault('userID',userIDs)
-		data[i].setdefault('movieID',movieIDs)
-		data[i].setdefault('rating',ratings)
+		data.setdefault(userIDs,{})
+		data[userIDs].setdefault(movieIDs,ratings)
     return data
